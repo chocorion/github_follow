@@ -21,9 +21,6 @@ except:
     print("You need to create a file token.txt with a github token inside !")
 
 
-print(token)
-
-sys.exit(0)
 userTab = {
     firstUser: list()
 }
@@ -44,11 +41,28 @@ def getFollowing(username):
 
     return None
 
+def getPopularity():
+    popularity = dict()
+
+    for user in userTab.keys():
+        popularity[user] = 0
+
+    for user in userTab.keys():
+        for followed in userTab[user]:
+            popularity[followed] += 1
+
+    return popularity    
 
 def createGraph():
     G = nx.MultiDiGraph()
+    users = userTab.keys()
+
+    popularity = getPopularity()
+
+    for user in users:
+        G.add_node(user, size=popularity[user])
     
-    for user in userTab.keys():
+    for user in users:
         for following in userTab[user]:
             G.add_edge(user, following)
 
@@ -78,9 +92,11 @@ if __name__ == "__main__":
         
         current_user = new_user
 
+    print(getPopularity())
+
     graph = createGraph()
     pos = nx.spring_layout(graph, iterations=10)
-    nx.draw(graph, pos, node_size=0, alpha=0.4, edge_color='r', font_size=16, with_labels=True)
+    nx.draw(graph, pos, node_size=0, alpha=0.7, edge_color='r', font_size=13, with_labels=True)
 
     plt.show()
 
