@@ -19,6 +19,7 @@ try:
         token = file.readline()
 except:
     print("You need to create a file token.txt with a github token inside !")
+    sys.exit(0)
 
 
 userTab = {
@@ -26,7 +27,7 @@ userTab = {
 }
 
 def getUser(username):
-    r = requests.get(baseUrl + username, auth=('token', '0f3309802e6b1f8f346577761fb21ab81aea43ca'))
+    r = requests.get(baseUrl + username, auth=('token', token))
 
     if (r.status_code == 200):
         return r.json()
@@ -34,7 +35,7 @@ def getUser(username):
     return None
 
 def getFollowing(username):
-    r = requests.get(baseUrl + username + "/following", auth=('token', '0f3309802e6b1f8f346577761fb21ab81aea43ca'))
+    r = requests.get(baseUrl + username + "/following", auth=('token', token))
 
     if (r.status_code == 200):
         return r.json()
