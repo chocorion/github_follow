@@ -17,6 +17,7 @@ except:
 try:
     with open('token.txt') as file:
         token = file.readline()
+        token = token[:len(token)]
 except:
     print("You need to create a file token.txt with a github token inside !")
     sys.exit(0)
@@ -32,6 +33,7 @@ def getUser(username):
     if (r.status_code == 200):
         return r.json()
 
+    print("Warning : getUser, status code {}".format(r.status_code))
     return None
 
 def getFollowing(username):
@@ -40,6 +42,7 @@ def getFollowing(username):
     if (r.status_code == 200):
         return r.json()
 
+    print("Warning : getFollowing, status code {}".format(r.status_code))
     return None
 
 def getPopularity():
@@ -77,19 +80,22 @@ if __name__ == "__main__":
         new_user = []
 
         for user in current_user:
+            print("Checking user {}".format(user))
             following = getFollowing(user)
-
-            if (following == None):
-                print("Can't get following for user {}".format(user))
-                continue
             
+            if (following == None):
+                print("\tCan't get following for this user...")
+                continue
+            print("\t following {} persons : {{ ".format(len(following)), end="")
             for following_user in following:
+                print("{} ".format(following_user["login"]), end="")
                 userTab[user].append(following_user["login"])
 
                 if (following_user["login"] not in userTab):
                     userTab[following_user["login"]] = list()
 
                     new_user.append(following_user["login"])
+            print("}")
         
         current_user = new_user
 
